@@ -9,7 +9,7 @@ function NameForm() {
   const generateNames = async () => {
     if (!ethnicity) return alert('Please enter an ethnicity');
     setLoading(true);
-
+    console.log(process.env.REACT_APP_OPENAI_API_KEY);
     try {
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions',
