@@ -7,14 +7,17 @@ function NameForm() {
   const [loading, setLoading] = useState(false);
 
   const generateNames = async () => {
-    if (!ethnicity) return alert('Please enter an ethnicity');
+    const openai_api_key = process.env.REACT_APP_OPENAI_API_KEY;
+    const aiModel = 'gpt-3.5-turbo';
+
+    if (!ethnicity) return alert('Please enter an ethnicity!');
     setLoading(true);
-    console.log(process.env.REACT_APP_OPENAI_API_KEY);
+
     try {
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions',
         {
-          model: 'gpt-3.5-turbo',
+          model: aiModel,
           messages: [
             {
               role: 'system',
@@ -29,15 +32,18 @@ function NameForm() {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+            Authorization: `Bearer ${openai_api_key}`,
           },
         }
       );
 
-      const generatedNames = response.data.choices[0].message.content.split('\n').filter(Boolean);
+      // Ensure correct parsing of names
+      const generatedNames = response.data.choices[0].message.content
+        .split('\n')
+        .filter((name) => name.trim() !== '');
       setNames(generatedNames);
     } catch (error) {
-      console.error('Error generating names:', error);
+      console.error('Error generating names:', error.response || error.message);
       alert('Failed to generate names. Please try again.');
     }
 
@@ -66,7 +72,7 @@ function NameForm() {
             value={ethnicity}
             onChange={(e) => setEthnicity(e.target.value)}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="e.g., Japanese, Indian, African"
+            placeholder="e.g., Vietnamese, Indian, African"
           />
         </div>
         <button
