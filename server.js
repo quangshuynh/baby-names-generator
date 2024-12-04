@@ -3,7 +3,12 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const { Configuration, OpenAIApi } = require("openai");
 
-const openai_api_key = process.env.REACT_APP_OPENAI_API_KEY;
+require("dotenv").config();
+console.log("OpenAI API Key:", process.env.OPENAI_API_KEY);
+
+const openai_api_key = process.env.OPENAI_API_KEY;
+
+
 
 if (!openai_api_key) {   // exit server if the key is missing
   console.error("OpenAI API key is not defined in the environment.");
@@ -27,7 +32,7 @@ app.post("/chat", async (req, res) => {
     const { prompt } = req.body;
 
     const completion = await openai.createCompletion({
-      model: "text-davinci-003", // Use an appropriate OpenAI model
+      model: "text-davinci-003", 
       max_tokens: 512,
       temperature: 0.7, // adjust temperature as needed
       prompt: prompt,
